@@ -35,10 +35,10 @@ public class SimpleBankAccount implements BankAccount {
 
     @Override
     public void withdraw(final int userID, final double amount) throws Exception {
-        //double finalAmount = amount + WITHDRAWAL_FEE;
+        double finalAmount = amount + WITHDRAWAL_FEE;
         if(checkUser(userID)){
-            if (isWithdrawAllowed(amount)) {
-                this.balance -= amount;
+            if (isWithdrawAllowed(finalAmount)) {
+                this.balance -= finalAmount;
             }
             else {
                 throw new Exception("Insufficient funds.");

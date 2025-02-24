@@ -17,6 +17,7 @@ class SimpleBankAccountTest {
     private final static double WITHDRAW_AMOUNT = 70;
     private final static String INSUFFICIENT_FOUND_MESSAGE = "Insufficient funds.";
     private final static String WRONG_ID_MESSAGE = "Wrong Id.";
+    private final static double WITHDRAWAL_FEE = 1;
 
     @BeforeEach
     void beforeEach(){
@@ -49,14 +50,14 @@ class SimpleBankAccountTest {
     void testWithdraw() throws Exception {
         bankAccount.deposit(accountHolder.getId(), DEPOSIT_AMOUNT);
         bankAccount.withdraw(accountHolder.getId(), WITHDRAW_AMOUNT);
-        assertEquals(DEPOSIT_AMOUNT - WITHDRAW_AMOUNT, bankAccount.getBalance());
+        assertEquals(DEPOSIT_AMOUNT - WITHDRAW_AMOUNT - WITHDRAWAL_FEE, bankAccount.getBalance());
     }
 
     @Test
     void testWrongWithdraw() throws Exception {
         bankAccount.deposit(accountHolder.getId(), DEPOSIT_AMOUNT);
         Exception exception = assertThrows(Exception.class, () -> {
-            bankAccount.withdraw(2, WITHDRAW_AMOUNT);
+            bankAccount.withdraw(2, WITHDRAW_AMOUNT - WITHDRAWAL_FEE);
         });
         assertEquals(WRONG_ID_MESSAGE, exception.getMessage());
         assertEquals(DEPOSIT_AMOUNT, bankAccount.getBalance());
