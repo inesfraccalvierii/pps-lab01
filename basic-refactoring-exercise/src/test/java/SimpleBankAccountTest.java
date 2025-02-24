@@ -13,6 +13,11 @@ class SimpleBankAccountTest {
     private AccountHolder accountHolder;
     private BankAccount bankAccount;
 
+    private final static double DEPOSIT_AMOUNT = 100;
+    private final static double WITHDRAW_AMOUNT = 70;
+    private final static String INSUFFICIENT_FOUND_MESSAGE = "Insufficient funds.";
+    private final static String WRONG_ID_MESSAGE = "Wrong Id.";
+
     @BeforeEach
     void beforeEach(){
         accountHolder = new AccountHolder("Mario", "Rossi", 1);
@@ -25,29 +30,47 @@ class SimpleBankAccountTest {
     }
 
     @Test
-    void testDeposit() {
-        bankAccount.deposit(accountHolder.getId(), 100);
-        assertEquals(100, bankAccount.getBalance());
+    void testDeposit() throws Exception {
+        bankAccount.deposit(accountHolder.getId(), DEPOSIT_AMOUNT);
+        assertEquals(DEPOSIT_AMOUNT, bankAccount.getBalance());
     }
 
     @Test
-    void testWrongDeposit() {
-        bankAccount.deposit(accountHolder.getId(), 100);
-        bankAccount.deposit(2, 50);
-        assertEquals(100, bankAccount.getBalance());
+    void testWrongDeposit() throws Exception {
+        bankAccount.deposit(accountHolder.getId(), DEPOSIT_AMOUNT);
+        Exception exception = assertThrows(Exception.class, () -> {
+            bankAccount.deposit(2, WITHDRAW_AMOUNT);
+        });
+        assertEquals(WRONG_ID_MESSAGE, exception.getMessage());
+        assertEquals(DEPOSIT_AMOUNT, bankAccount.getBalance());
     }
 
     @Test
-    void testWithdraw() {
-        bankAccount.deposit(accountHolder.getId(), 100);
-        bankAccount.withdraw(accountHolder.getId(), 70);
-        assertEquals(30, bankAccount.getBalance());
+    void testWithdraw() throws Exception {
+        bankAccount.deposit(accountHolder.getId(), DEPOSIT_AMOUNT);
+        bankAccount.withdraw(accountHolder.getId(), WITHDRAW_AMOUNT);
+        assertEquals(DEPOSIT_AMOUNT - WITHDRAW_AMOUNT, bankAccount.getBalance());
     }
 
     @Test
-    void testWrongWithdraw() {
-        bankAccount.deposit(accountHolder.getId(), 100);
-        bankAccount.withdraw(2, 70);
-        assertEquals(100, bankAccount.getBalance());
+    void testWrongWithdraw() throws Exception {
+        bankAccount.deposit(accountHolder.getId(), DEPOSIT_AMOUNT);
+        Exception exception = assertThrows(Exception.class, () -> {
+            bankAccount.withdraw(2, WITHDRAW_AMOUNT);
+        });
+        assertEquals(WRONG_ID_MESSAGE, exception.getMessage());
+        assertEquals(DEPOSIT_AMOUNT, bankAccount.getBalance());
     }
+
+
+    @Test
+    void testWithdrawWithExcessiveAmount() throws Exception {
+        bankAccount.deposit(accountHolder.getId(), DEPOSIT_AMOUNT);
+        Exception exception = assertThrows(Exception.class, () -> {
+            bankAccount.withdraw(accountHolder.getId(), DEPOSIT_AMOUNT + 30);
+        });
+        assertEquals(INSUFFICIENT_FOUND_MESSAGE, exception.getMessage());
+        assertEquals(DEPOSIT_AMOUNT, bankAccount.getBalance());
+    }
+
 }

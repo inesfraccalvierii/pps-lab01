@@ -24,7 +24,7 @@ public interface BankAccount {
      * @param userID the id of the user that wants do the deposit
      * @param amount the amount of the deposit
      */
-    void deposit(int userID, double amount);
+    void deposit(int userID, double amount) throws Exception;
 
     /**
      * Allows the withdrawal of an amount from the account, if the given userID corresponds to the register holder ID
@@ -33,5 +33,5 @@ public interface BankAccount {
      * @param userID the id of the user that wants do the withdrawal
      * @param amount the amount of the withdrawal
      */
-    void withdraw(int userID, double amount);
+    void withdraw(int userID, double amount) throws Exception;
 }
