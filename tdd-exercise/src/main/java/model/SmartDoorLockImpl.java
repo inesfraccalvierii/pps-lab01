@@ -25,7 +25,10 @@ public class SmartDoorLockImpl implements SmartDoorLock {
         if(this.state != SmartDoorLockState.UNLOCKED){
             throw new IllegalStateException("The smartDoor is not unlocked.");
         }
-        this.pin = pin;
+        if(isValidFourDigitString(pin)){
+            this.pin = pin;
+        }
+
     }
 
     @Override
@@ -70,5 +73,13 @@ public class SmartDoorLockImpl implements SmartDoorLock {
         UNLOCKED,
         LOCKED,
         BLOCKED;
+    }
+
+    private static boolean isValidFourDigitString(String pin) {
+        if (pin.length() != 4) throw new IllegalStateException("More than 4 digit.");
+        for (char c : pin.toCharArray()) {
+            if (!Character.isDigit(c)) throw new IllegalStateException("Set pin with only digit.");;
+        }
+        return true;
     }
 }

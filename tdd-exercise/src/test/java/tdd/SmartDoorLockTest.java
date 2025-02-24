@@ -10,9 +10,11 @@ public class SmartDoorLockTest {
 
     private SmartDoorLockImpl smartDoorLock;
     private final static String EXAMPLE_PIN = "1234";
+    private final static String WRONG_EXAMPLE_PIN = "12c446";
 
     private final static String SET_PIN_LOCKED_SMARTDOOR = "The smartDoor is not unlocked.";
     private final static String LOCK_UNSET_PIN = "Smartdoors's pin is not set.";
+
     @BeforeEach
     void beforeEach(){
       smartDoorLock = new SmartDoorLockImpl();
@@ -57,5 +59,14 @@ public class SmartDoorLockTest {
         });
 
         assertEquals(LOCK_UNSET_PIN, exception.getMessage());
+    }
+
+    @Test
+    public void setNewWrongPin() {
+        IllegalStateException exception = assertThrows(IllegalStateException.class, () -> {
+            smartDoorLock.setPin(WRONG_EXAMPLE_PIN);
+        });
+
+        assertEquals("More than 4 digit.", exception.getMessage());
     }
 }
