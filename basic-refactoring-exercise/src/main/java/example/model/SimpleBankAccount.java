@@ -37,12 +37,11 @@ public class SimpleBankAccount implements BankAccount {
     public void withdraw(final int userID, final double amount) throws Exception {
         double finalAmount = amount + WITHDRAWAL_FEE;
         if(checkUser(userID)){
-            if (isWithdrawAllowed(finalAmount)) {
-                this.balance -= finalAmount;
-            }
-            else {
+            if (!isWithdrawAllowed(finalAmount)) {
                 throw new Exception("Insufficient funds.");
+
             }
+            this.balance -= finalAmount;
         }
     }
 
@@ -51,10 +50,10 @@ public class SimpleBankAccount implements BankAccount {
     }
 
     private boolean checkUser(final int id) throws Exception {
-        if(this.holder.getId() == id){
-            return true;
-        } else {
+        if(this.holder.getId() != id){
             throw new Exception("Wrong Id.");
+
         }
+        return true;
     }
 }
