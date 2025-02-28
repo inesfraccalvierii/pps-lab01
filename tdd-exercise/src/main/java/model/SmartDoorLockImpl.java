@@ -4,6 +4,9 @@ import tdd.SmartDoorLock;
 public class SmartDoorLockImpl implements SmartDoorLock {
 
     private String pin;
+    private int attempts;
+    private final static int MAX_ATTEMPTS = 5;
+    private final static int RESET_ATTEMPTS = 0;
 
     public String getPin() {
         return pin;
@@ -18,6 +21,7 @@ public class SmartDoorLockImpl implements SmartDoorLock {
     public SmartDoorLockImpl() {
         this.pin = "";
         this.state = SmartDoorLockState.UNLOCKED;
+        this.attempts = RESET_ATTEMPTS;
     }
 
     @Override
@@ -33,7 +37,17 @@ public class SmartDoorLockImpl implements SmartDoorLock {
 
     @Override
     public void unlock(String pin) {
-
+        if (pin.equals( this.pin)){
+            this.state = SmartDoorLockState.UNLOCKED;
+        }
+        else {
+            if(getFailedAttempts() == MAX_ATTEMPTS){
+                this.state = SmartDoorLockState.BLOCKED;
+            }
+            else {
+                this.attempts++;
+            }
+        }
     }
 
     @Override
@@ -46,27 +60,29 @@ public class SmartDoorLockImpl implements SmartDoorLock {
 
     @Override
     public boolean isLocked() {
-        return false;
+        return this.state == SmartDoorLockState.LOCKED;
     }
 
     @Override
     public boolean isBlocked() {
-        return false;
+        return this.state == SmartDoorLockState.BLOCKED;
     }
 
     @Override
     public int getMaxAttempts() {
-        return 0;
+        return MAX_ATTEMPTS;
     }
 
     @Override
     public int getFailedAttempts() {
-        return 0;
+        return this.attempts;
     }
 
     @Override
     public void reset() {
-
+        this.pin = "";
+        this.state = SmartDoorLockState.UNLOCKED;
+        this.attempts = RESET_ATTEMPTS;
     }
 
     public enum SmartDoorLockState {
